@@ -1,5 +1,5 @@
 <?php
-namespace App\Infrastructure\MailSender\Sender\Adapter;
+namespace App\Application\Service\MailSender\Sender\Adapter;
 
 interface MailerInterface
 {

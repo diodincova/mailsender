@@ -2,8 +2,8 @@
 
 namespace App\Application\Service;
 
-use App\Infrastructure\MailSender\Renderer\Adapter\EmailRendererInterface;
-use App\Infrastructure\MailSender\Sender\Adapter\MailerInterface;
+use App\Application\Service\MailSender\Renderer\Adapter\EmailRendererInterface;
+use App\Application\Service\MailSender\Sender\Adapter\MailerInterface;
 
 final class Sender implements SenderInterface
 {

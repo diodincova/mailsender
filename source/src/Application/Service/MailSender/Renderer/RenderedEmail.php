@@ -1,5 +1,5 @@
 <?php
-namespace App\Infrastructure\MailSender\Renderer;
+namespace App\Application\Service\MailSender\Renderer;
 
 final class RenderedEmail
 {

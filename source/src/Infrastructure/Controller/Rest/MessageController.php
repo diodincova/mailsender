@@ -16,14 +16,10 @@ class MessageController extends AbstractFOSRestController
     /** @var string */
     private $from;
 
-    /** @var string */
-    private $subject;
-
     public function __construct(SenderInterface $sender)
     {
         $this->sender = $sender;
         $this->from = 'namahtee@gmail.com';
-        $this->subject = 'backend test case';
     }
 
     /**
@@ -34,13 +30,14 @@ class MessageController extends AbstractFOSRestController
      */
     public function sendMail(Request $request)
     {
-        $recipients = is_array($request['users']) ? $request['users'] : [$request['users']];
+        $recipients = is_array($request->get('users')) ? $request->get('users') : [$request->get('users')];
+        $theme = (string)$request->get('theme');
 
         $this->sender->send(
             $this->from,
             $recipients,
-            'emails/' . $request['theme'] . '.html.twig',
-            ['subject' => $this->subject]
+            'emails/' . $theme . '.html.twig',
+            ['subject' => $theme]
         );
 
         return new Response('check');

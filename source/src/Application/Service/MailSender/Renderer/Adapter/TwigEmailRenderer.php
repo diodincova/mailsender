@@ -1,7 +1,7 @@
 <?php
-namespace App\Infrastructure\MailSender\Renderer\Adapter;
+namespace App\Application\Service\MailSender\Renderer\Adapter;
 
-use App\Infrastructure\MailSender\Renderer\RenderedEmail;
+use App\Application\Service\MailSender\Renderer\RenderedEmail;
 
 final class TwigEmailRenderer implements EmailRendererInterface
 {
