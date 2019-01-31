@@ -1,90 +1,47 @@
 <?php
+
 namespace App\Application\Service;
 
-use Interop\Queue\Exception as PsrException;
-use Interop\Queue\Context as PsrContext;
-use Interop\Queue\Queue as PsrQueue;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class MailSender extends \Swift_ConfigurableSpool
+class MailSender
 {
-    /**
-     * @var PsrContext
-     */
-    private $context;
-    /**
-     * @var PsrQueue
-     */
-    private $queue;
-    /**
-     * @param PsrContext      $context
-     * @param PsrQueue|string $queue
-     */
-    public function __construct(PsrContext $context, $queue = 'swiftmailer_spool')
+    /** @var \Swift_Mailer */
+    private $mailer;
+
+    private $templating;
+
+    /** @var string */
+    private $sender;
+
+    /** @var string */
+    private $subject;
+
+    public function __construct(ContainerInterface $container, \Swift_Mailer $mailer)
     {
-        $this->context = $context;
-        if (false == $queue instanceof PsrQueue) {
-            $queue = $this->context->createQueue($queue);
-        }
-        $this->queue = $queue;
+        $this->mailer = $mailer;
+        $this->templating = $container->get('templating');
+        $this->sender = 'namahtee@gmail.com';
+        $this->subject = 'subject';
     }
+
     /**
-     * {@inheritdoc}
+     * @param $addresses
+     * @param string $theme
+     * @return int
      */
-    public function queueMessage(\Swift_Mime_SimpleMessage $message)
+    public function send($addresses, string $theme)
     {
-        try {
-            $message = $this->context->createMessage(serialize($message));
-            $this->context->createProducer()->send($this->queue, $message);
-        } catch (PsrException $e) {
-            throw new \Swift_IoException(sprintf('Unable to send message to message queue.'), null, $e);
-        }
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function flushQueue(\Swift_Transport $transport, &$failedRecipients = null)
-    {
-        $consumer = $this->context->createConsumer($this->queue);
-        $isTransportStarted = false;
-        $failedRecipients = (array) $failedRecipients;
-        $count = 0;
-        $time = time();
-        while (true) {
-            if ($psrMessage = $consumer->receive(1000)) {
-                if (false == $isTransportStarted) {
-                    $transport->start();
-                    $isTransportStarted = true;
-                }
-                $message = unserialize($psrMessage->getBody());
-                $count += $transport->send($message, $failedRecipients);
-                $consumer->acknowledge($psrMessage);
-            }
-            if ($this->getMessageLimit() && $count >= $this->getMessageLimit()) {
-                break;
-            }
-            if ($this->getTimeLimit() && (time() - $time) >= $this->getTimeLimit()) {
-                break;
-            }
-        }
-        return $count;
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function start()
-    {
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function stop()
-    {
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function isStarted()
-    {
-        return true;
+        $message = (new \Swift_Message($this->subject))
+            ->setFrom($this->sender)
+            ->setTo($addresses)
+            ->setBody(
+                $this->templating->render(
+                    'emails/' . $theme . '.html.twig'
+                ),
+                'text/html'
+            );
+
+        return $this->mailer->send($message);
     }
 }
