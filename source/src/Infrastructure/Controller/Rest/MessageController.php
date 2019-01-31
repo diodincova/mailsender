@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Infrastructure\Controller\Rest;
 
-use App\Application\Service\MailSender;
+use App\Application\Service\SenderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -9,12 +10,20 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 
 class MessageController extends AbstractFOSRestController
 {
-    /** @var MailSender */
-    private $mailer;
+    /** @var SenderInterface */
+    private $sender;
 
-    public function __construct(MailSender $mailer)
+    /** @var string */
+    private $from;
+
+    /** @var string */
+    private $subject;
+
+    public function __construct(SenderInterface $sender)
     {
-        $this->mailer = $mailer;
+        $this->sender = $sender;
+        $this->from = 'namahtee@gmail.com';
+        $this->subject = 'backend test case';
     }
 
     /**
@@ -25,7 +34,14 @@ class MessageController extends AbstractFOSRestController
      */
     public function sendMail(Request $request)
     {
-        $this->mailer->send($request['users'], $request['theme']);
+        $recipients = is_array($request['users']) ? $request['users'] : [$request['users']];
+
+        $this->sender->send(
+            $this->from,
+            $recipients,
+            'emails/' . $request['theme'] . '.html.twig',
+            ['subject' => $this->subject]
+        );
 
         return new Response('check');
     }
