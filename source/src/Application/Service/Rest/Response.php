@@ -1,5 +1,5 @@
 <?php
-namespace App\Presentation\Api;
+namespace App\Application\Service\Rest;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infrastructure\Controller\Rest;
+namespace App\Controller;
 
 use App\Application\Service\SenderInterface;
-use App\Presentation\Api\ResponseFactory;
+use App\Application\Service\Rest\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -30,7 +30,7 @@ class MessageController extends AbstractFOSRestController
      * @Rest\Post("/email/send")
      *
      * @param Request $request
-     * @return \App\Presentation\Api\Response
+     * @return \App\Application\Service\Rest\Response
      * @throws \Exception
      */
     public function sendMail(Request $request)

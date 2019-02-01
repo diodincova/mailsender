@@ -1,5 +1,5 @@
 <?php
-namespace App\Application\Service\MailSender\Sender\Adapter;
+namespace App\Application\Service\MailSender\Sender;
 
 final class SwiftMailer implements MailerInterface
 {
@@ -13,6 +13,7 @@ final class SwiftMailer implements MailerInterface
         $this->mailer = $mailer;
     }
 
+    //TODO:ответ
     public function send(string $from, array $recipients, string $subject, string $body): void
     {
         $swiftMessage = (new \Swift_Message($subject))

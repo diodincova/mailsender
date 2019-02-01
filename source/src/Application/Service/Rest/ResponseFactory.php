@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Presentation\Api;
+namespace App\Application\Service\Rest;
 
 
 class ResponseFactory
@@ -34,18 +34,11 @@ class ResponseFactory
     /**
      * @param $data
      * @param int $status
-     * @param array $meta
      * @return Response
      * @throws \Exception
      */
-    public function createResponse($data, $status = Response::HTTP_OK, array $meta = []): Response
+    public function createResponse($data, $status = Response::HTTP_OK): Response
     {
-        $response = [];
-
-        if (count($meta)) {
-            $response['meta'] = $meta;
-        }
-
         $response['data'] = $data;
 
         return $this->createJsonResponse($response, $status);
