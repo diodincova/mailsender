@@ -12,3 +12,9 @@
 на ручку $url/api/send/email отправляется запрос с post данными users и theme, 
 App\Infrastructure\Controller\Rest\MessageController - контроллер, который обрабатывает запрос
 и запускает рассылку
+
+## Что смущает ##
+
+- $url/api/send/email - норм ли адрес для ручки
+- нужно ли добавить обработку других ответов от сервера
+- не уверена, насчет структуры сервиса - Api\Application\Service\MailSender может лучше в Infrastructure перенести
