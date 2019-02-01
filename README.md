@@ -9,7 +9,7 @@
 
 ## Реализация ##
 
-на ручку $url/api/send/email отправляется запрос с post данными users и theme, 
+на ручку $url/api/email/send отправляется запрос с post данными users и theme, 
 App\Infrastructure\Controller\Rest\MessageController - контроллер, который обрабатывает запрос
 и запускает рассылку
 

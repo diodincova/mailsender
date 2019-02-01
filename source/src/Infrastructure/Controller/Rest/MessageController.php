@@ -27,7 +27,7 @@ class MessageController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post("/send/email")
+     * @Rest\Post("/email/send")
      *
      * @param Request $request
      * @return \App\Presentation\Api\Response
