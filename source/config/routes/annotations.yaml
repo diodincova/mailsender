@@ -2,6 +2,6 @@ controllers:
     resource: ../../src/Controller/
     type: annotation
 rest_controller:
-    resource: ../../src/Infrastructure/Controller/Rest/
+    resource: ../../src/Controller/Rest/
     type: annotation
     prefix: /api

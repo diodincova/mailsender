@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Rest;
 
 use App\Application\Service\SenderInterface;
 use App\Application\Service\Rest\ResponseFactory;
