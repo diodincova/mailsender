@@ -13,14 +13,20 @@ final class SwiftMailer implements MailerInterface
         $this->mailer = $mailer;
     }
 
-    //TODO:ответ
-    public function send(string $from, array $recipients, string $subject, string $body): void
+    /**
+     * @param string $from
+     * @param array $recipients
+     * @param string $subject
+     * @param string $body
+     * @return int
+     */
+    public function send(string $from, array $recipients, string $subject, string $body): int
     {
         $swiftMessage = (new \Swift_Message($subject))
             ->setFrom($from)
             ->setTo($recipients)
             ->setBody($body);
 
-        $this->mailer->send($swiftMessage);
+        return $this->mailer->send($swiftMessage);
     }
 }

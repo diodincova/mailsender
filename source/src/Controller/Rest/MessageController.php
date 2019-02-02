@@ -25,7 +25,11 @@ class MessageController extends AbstractFOSRestController
     /** @var string */
     private $from;
 
-    public function __construct(SenderInterface $sender, ResponseFactory $responseFactory, ValidatorInterface $validator)
+    public function __construct(
+        SenderInterface $sender,
+        ResponseFactory $responseFactory,
+        ValidatorInterface $validator
+    )
     {
         $this->sender = $sender;
         $this->responseFactory = $responseFactory;
@@ -57,24 +61,21 @@ class MessageController extends AbstractFOSRestController
 
         $recipientInfo = $this->createRecipientsList($emails);
 
-        if (count($recipientInfo['recipients']) == 0) {
+        if (0 === count($recipientInfo['recipients'])) {
             return $this->responseFactory->createResponse([], Response::HTTP_BAD_REQUEST, $recipientInfo['errors']);
         }
 
-        $this->sender->send(
-            $this->from,
-            $recipientInfo['recipients'],
-            'emails/' . $theme . '.html.twig',
-            ['subject' => $theme]
-        );
+        if (!$this->send($this->from, $recipientInfo['recipients'], $theme)) {
+            $errors[] = 'Something goes wrong. Сheck that  \'' . $theme . '\' really exist.';
+            return $this->responseFactory->createResponse([], Response::HTTP_BAD_REQUEST, $errors);
+        }
 
         $data = [
-            'recipients' => $recipientInfo['recipients'],
             'theme' => $theme,
+            'recipients' => $recipientInfo['recipients'],
         ];
 
         return $this->responseFactory->createResponse($data, Response::HTTP_OK, $recipientInfo['errors']);
-
     }
 
     /**
@@ -106,5 +107,21 @@ class MessageController extends AbstractFOSRestController
             'recipients' => $recipients,
             'errors' => $errors
         ];
+    }
+
+    /**
+     * @param $from
+     * @param $recipients
+     * @param $theme
+     * @return bool
+     */
+    private function send($from, $recipients, $theme): bool
+    {
+        return $this->sender->send(
+            $from,
+            $recipients['recipients'],
+            'emails/' . $theme . '.html.twig',
+            ['subject' => $theme]
+        );
     }
 }

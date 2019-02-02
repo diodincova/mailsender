@@ -23,10 +23,21 @@ final class Sender implements SenderInterface
         $this->mailer = $mailer;
     }
 
-    public function send(string $from, array $recipients, string $template, array $data): void
+    /**
+     * @param string $from
+     * @param array $recipients
+     * @param string $template
+     * @param array $data
+     * @return bool|int
+     */
+    public function send(string $from, array $recipients, string $template, array $data)
     {
-        $renderedEmail = $this->emailRenderer->render($template, $data);
+        try {
+            $renderedEmail = $this->emailRenderer->render($template, $data);
+        } catch (\Throwable $e) {
+            return false;
+        }
 
-        $this->mailer->send($from, $recipients, $renderedEmail->subject(), $renderedEmail->body());
+        return $this->mailer->send($from, $recipients, $renderedEmail->subject(), $renderedEmail->body());
     }
 }
