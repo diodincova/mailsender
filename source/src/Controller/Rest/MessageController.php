@@ -2,11 +2,14 @@
 
 namespace App\Controller\Rest;
 
+use App\Application\Service\Rest\Response;
 use App\Application\Service\SenderInterface;
 use App\Application\Service\Rest\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MessageController extends AbstractFOSRestController
 {
@@ -16,14 +19,18 @@ class MessageController extends AbstractFOSRestController
     /** @var ResponseFactory */
     private $responseFactory;
 
+    /** @var ValidatorInterface */
+    private $validator;
+
     /** @var string */
     private $from;
 
-    public function __construct(SenderInterface $sender, ResponseFactory $responseFactory)
+    public function __construct(SenderInterface $sender, ResponseFactory $responseFactory, ValidatorInterface $validator)
     {
         $this->sender = $sender;
-        $this->from = 'namahtee@gmail.com';
         $this->responseFactory = $responseFactory;
+        $this->validator = $validator;
+        $this->from = 'namahtee@gmail.com';
     }
 
     /**
@@ -35,21 +42,69 @@ class MessageController extends AbstractFOSRestController
      */
     public function sendMail(Request $request)
     {
-        $recipients = is_array($request->get('users')) ? $request->get('users') : [$request->get('users')];
+        if (NULL === $request->get('theme')) {
+            $errors[] = 'Choose \'theme\' for email: \'welcome\', \'registration\'';
+            return $this->responseFactory->createResponse([], Response::HTTP_BAD_REQUEST, $errors);
+        }
+
+        if (NULL === $request->get('users')) {
+            $errors[] = 'Specify the recipients of the letter';
+            return $this->responseFactory->createResponse([], Response::HTTP_BAD_REQUEST, $errors);
+        }
+
+        $emails = is_array($request->get('users')) ? $request->get('users') : [$request->get('users')];
         $theme = (string)$request->get('theme');
+
+        $recipientInfo = $this->createRecipientsList($emails);
+
+        if (count($recipientInfo['recipients']) == 0) {
+            return $this->responseFactory->createResponse([], Response::HTTP_BAD_REQUEST, $recipientInfo['errors']);
+        }
 
         $this->sender->send(
             $this->from,
-            $recipients,
+            $recipientInfo['recipients'],
             'emails/' . $theme . '.html.twig',
             ['subject' => $theme]
         );
 
-        $email = [
-            'recipients' => $recipients,
+        $data = [
+            'recipients' => $recipientInfo['recipients'],
             'theme' => $theme,
         ];
 
-        return $this->responseFactory->createResponse($email);
+        return $this->responseFactory->createResponse($data, Response::HTTP_OK, $recipientInfo['errors']);
+
+    }
+
+    /**
+     * @param array $emails
+     * @return array
+     */
+    private function createRecipientsList(array $emails): array
+    {
+        $recipients = [];
+        $errors = [];
+
+        foreach ($emails as $email) {
+            $emailConstraint = new EmailConstraint();
+            $emailConstraint->message = 'Invalid email address: ' . $email;
+
+            $emailErrors = $this->validator->validate(
+                $email,
+                $emailConstraint
+            );
+
+            if (0 === count($emailErrors)) {
+                $recipients[] = $email;
+            } else {
+                $errors[] = $emailErrors[0]->getMessage();
+            }
+        }
+
+        return [
+            'recipients' => $recipients,
+            'errors' => $errors
+        ];
     }
 }

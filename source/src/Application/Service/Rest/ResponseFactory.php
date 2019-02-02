@@ -34,12 +34,16 @@ class ResponseFactory
     /**
      * @param $data
      * @param int $status
+     * @param array $errors
      * @return Response
      * @throws \Exception
      */
-    public function createResponse($data, $status = Response::HTTP_OK): Response
+    public function createResponse($data, $status = Response::HTTP_OK, array $errors = []): Response
     {
-        $response['data'] = $data;
+        $response = [
+            'data' => $data,
+            'errors' => $errors
+        ];
 
         return $this->createJsonResponse($response, $status);
     }
