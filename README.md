@@ -28,7 +28,7 @@ recipient in the queue and the last one.
 for me - using template engine to generate different letter themes - 
 did not come up with anything. I used Twig with preset masks for data 
 substitution, which will be different in different letters. Most likely, 
-there is some other obvious implication for me in this question: (
+there is some other unobvious implication for me in this question :(
 
 
 
