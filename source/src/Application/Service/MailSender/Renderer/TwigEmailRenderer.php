@@ -1,7 +1,7 @@
 <?php
 namespace App\Application\Service\MailSender\Renderer;
 
-final class TwigEmailRenderer implements EmailRendererInterface
+class TwigEmailRenderer implements EmailRendererInterface
 {
     /** @var \Twig_Environment */
     private $twig;
