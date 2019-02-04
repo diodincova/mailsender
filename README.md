@@ -41,3 +41,8 @@ The structure of the main functionality looks like this
 ![alt text](https://pp.userapi.com/c846216/v846216418/18bff8/P-bt3Fv2fho.jpg)
 
 Templates - /source/templates/emails
+
+cron task looks like this
+```
+* * * * * php /source/bin/console swiftmailer:spool:send --message-limit=5
+```
