@@ -36,6 +36,8 @@ substitution, which will be different in different letters.
 Now there are 2 templates: 'welcome' and 'registration'. Most likely, 
 there is some other unobvious implication for me in this question :(
 
+I hope I created a clear code structure. 
+The structure of the main functionality looks like this
+![alt text](https://pp.userapi.com/c850528/v850528114/aa637/YYKPoYrBZRA.jpg)
 
-
-
+Templates - /source/templates/emails
