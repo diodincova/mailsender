@@ -38,6 +38,6 @@ there is some other unobvious implication for me in this question :(
 
 I hope I created a clear code structure. 
 The structure of the main functionality looks like this
-![alt text](https://pp.userapi.com/c850528/v850528114/aa637/YYKPoYrBZRA.jpg)
+![alt text](https://pp.userapi.com/c846216/v846216418/18bff8/P-bt3Fv2fho.jpg)
 
 Templates - /source/templates/emails
