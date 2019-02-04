@@ -1,0 +1,66 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "Transactional email REST API"
+  termsOfService: "http://www.dianakuzmina.de/"
+  description: "test case"
+  contact:
+    name: Diana Kuzmina
+    email: di_07@inbox.ru
+paths:
+  /api/email/send:
+    post:
+      summary: Send emails one by one
+      tags:
+      - Email sender
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                theme:
+                  type: string
+                  description: Email template
+                  example: 'welcome'
+                users:
+                  type: array
+                  description: Email recipients
+                  items: 
+                    type: string
+                    description: Email recipient
+                    example: 'example@mail.com'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid request
+components:
+
+  schemas:
+    ApiResponse:
+      description: Delivery report
+      properties:
+        data:
+          $ref: '#/components/schemas/ApiResponseData'
+        errors:
+          type: array
+          items:
+            type: string
+            example: 'Invalid email address: bad_email'
+
+    ApiResponseData:
+      description: Delivery data
+      properties:
+        theme:
+          type: string
+          description: Email template
+          example: 'welcome'
+        recipients:
+          type: array
+          items:
+              type: string
+              example: 'example@mail.com'

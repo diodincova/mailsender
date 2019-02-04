@@ -5,7 +5,12 @@ POST http://www.dianakuzmina.de/api/email/send
 Content-Type: application/json
 
 {"theme": "registration", "users": ["email_address1", "email_address2", ...] }
+or
+{"theme": "welcome", "users": ["email_address1", "email_address2", ...] }
 ```
+
+## api specification ##
+https://github.com/diodincova/mailsender/tree/master/docs/openapi.yaml
 
 ## Main functionality ##
 The api processes the route $url/api/email/send with the request 
@@ -27,7 +32,8 @@ recipient in the queue and the last one.
 - The second question took me by surprise. In addition to the obvious answer 
 for me - using template engine to generate different letter themes - 
 did not come up with anything. I used Twig with preset masks for data 
-substitution, which will be different in different letters. Most likely, 
+substitution, which will be different in different letters. 
+Now there are 2 templates: 'welcome' and 'registration'. Most likely, 
 there is some other unobvious implication for me in this question :(
 
 
